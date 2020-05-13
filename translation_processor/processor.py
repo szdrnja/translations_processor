@@ -91,7 +91,7 @@ if __name__ == "__main__":
     xlsx_df = pd.concat(sheets)
     if args.verbose:
         print(f'Read input file {args.input_file}')
-    # xl_data = pd.read_excel(os.path.join(os.fspath(__script_filepath.parent), 'input.xlsx'), sheetname=None)
+
     cols = list(xlsx_df.keys())
     if args.verbose:
         print(f'Found the following columns in the : {cols}')
