@@ -84,14 +84,13 @@ if __name__ == "__main__":
     parser = parser()
     args = parser.parse_args()
 
-    filepath = os.path.join(os.fspath(__script_filepath.parent), 'input.xlsx')
-    xlsx = pd.ExcelFile(filepath)
+    xlsx = pd.ExcelFile(args.input_file)
     sheets = []
-    for sheet in xlsx.sheet_names:
+    for idx, sheet in enumerate(xlsx.sheet_names):
         sheets.append(xlsx.parse(sheet))
     xlsx_df = pd.concat(sheets)
     if args.verbose:
-        print(f'Read input file {filepath}')
+        print(f'Read input file {args.input_file}')
     # xl_data = pd.read_excel(os.path.join(os.fspath(__script_filepath.parent), 'input.xlsx'), sheetname=None)
     cols = list(xlsx_df.keys())
     if args.verbose:
