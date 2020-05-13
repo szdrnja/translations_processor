@@ -30,10 +30,10 @@ def parser():
                         help=f'Excel file to be processed. Can contain data in multiple sheets.')
     parser.add_argument('output_file', default='dump.json',
                         help=f'Output filename')
-    parser.add_argument('-v', '--verbose', default=False,
+    parser.add_argument('-v', '--verbose', default=False, action='store_true',
                         help=f'Log informative messages.')
-    parser.add_argument('-s', '--sheet', default=None, type=check_positive_int,
-                        help=f'Process only a specific sheet. By default all sheets are processed and merged.')
+    # parser.add_argument('-s', '--sheet', default=None, type=check_positive_int, action='append',
+    #                     help=f'Process only a specific sheet. By default all sheets are processed and merged.')
     return parser
 
 error_cnt = 0
