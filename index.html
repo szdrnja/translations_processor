@@ -1,42 +1,39 @@
 <!DOCTYPE html>
 
 <body>
-
-  <h1>Main Page</h1>
+  <h1>Stefan I Love You</h1>
 
   <label for="inputFile">Upload file to process:</label>
 
-  <input type="file" id="inputFile" name="inputFile" accept=".xlsx, .xls">
+  <input type="file" id="inputFile" name="inputFile" accept=".xlsx, .xls" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
-<script src="translation_processor/processor.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
+  <script src="translation_processor/processor.js"></script>
 
-<script lang="javascript">
-  const onInputFileChange = (event) => {
-    const file = event.target.files[0];
-    console.log('fetched file ' + file.name);
-    const reader = new FileReader()
+  <script lang="javascript">
+    const onInputFileChange = (event) => {
+      const file = event.target.files[0];
+      console.log('fetched file ' + file.name);
+      const reader = new FileReader()
 
-    reader.onload = (e) => {
-      const data = e.target.result;
-      const workbook = XLSX.read(
-        data, {
-        type: 'binary'
-      });
-      processExcelData(workbook, '.');
-    };
-
-    reader.onerror = function (ex) {
-        console.log(ex);
+      reader.onload = (e) => {
+        const data = e.target.result;
+        const workbook = XLSX.read(
+          data, {
+          type: 'binary'
+        });
+        processExcelData(workbook, '.');
       };
 
-    reader.readAsBinaryString(file);
-  };
+      reader.onerror = function (ex) {
+          console.log(ex);
+        };
 
-  inputFile = document.getElementById('inputFile');
-  inputFile.addEventListener('change', onInputFileChange);
+      reader.readAsBinaryString(file);
+    };
 
-</script>
-
+    inputFile = document.getElementById('inputFile');
+    inputFile.addEventListener('change', onInputFileChange);
+  </script>
 </body>
