@@ -1,0 +1,25 @@
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: #000000;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.gif-div {
+  padding-top: 75%;
+  position: relative;
+}
+
+.gif-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
