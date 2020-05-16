@@ -15,26 +15,6 @@ export const colors = {
     dayMarker: "#333",
     timeLine: "#666",
   },
-  menu: {
-    selected: "#465379",
-    unselected: "#2f3853",
-  },
-  modal: {
-    background: "#efefef",
-  },
-  status: {
-    attention: "#f97576",
-    neutral: "#fad555",
-    positive: "#2fb87c",
-    info: "#63bbc3",
-  },
-  text: {
-    action: "#fff",
-    main: "#333",
-    mainDeEmphasize: "#666",
-    mainEmphasize: "#141b30",
-    error: "#eb4e6d",
-  },
 };
 
 export const dimensions = {

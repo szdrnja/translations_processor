@@ -78,39 +78,43 @@ const Dropzone: FunctionComponent<IProps> = ({
         multiple={allowMultipleFiles}
       />
 
-      <div style={{ height: "40px", margin: "10px auto" }}>
-        {!isDragOver && !showErrorMessage && (
+      <div style={{ margin: "10px auto", display: "contents" }}>
+        {!isDragOver && (
           <>
-            <p style={{ textAlign: "center", margin: "0 0 1.5rem 0" }}>or</p>
-            <div
-              style={styles.alternativeAtionContainer}
-              onClick={() => {
-                const currentRef = fileInputRef.current;
-                if (currentRef) {
-                  currentRef.click();
-                }
-              }}
-            >
-              <PlusIcon style={styles.alternativeActionIcon} />
-              <span style={styles.alternativeAction}>Choose File</span>
-            </div>
+            {!showErrorMessage && (
+              <>
+                <p style={{ margin: "0 0 1.5rem 0" }}>or</p>
+                <div
+                  style={styles.alternativeAtionContainer}
+                  onClick={() => {
+                    const currentRef = fileInputRef.current;
+                    if (currentRef) {
+                      currentRef.click();
+                    }
+                  }}
+                >
+                  <PlusIcon style={styles.alternativeActionIcon} />
+                  <span style={styles.alternativeAction}>Choose File</span>
+                </div>
+              </>
+            )}
+            {showErrorMessage && (
+              <div
+                style={styles.errorMessage}
+                onClick={() => {
+                  const currentRef = fileInputRef.current;
+                  if (currentRef) {
+                    currentRef.click();
+                  }
+                }}
+              >
+                <span style={{ fontWeight: "bold", paddingLeft: "5px" }}>
+                  ERROR: Invalid File Type
+                </span>
+                <span>Please upload a valid file here</span>
+              </div>
+            )}
           </>
-        )}
-        {showErrorMessage && (
-          <div
-            style={styles.errorMessage}
-            onClick={() => {
-              const currentRef = fileInputRef.current;
-              if (currentRef) {
-                currentRef.click();
-              }
-            }}
-          >
-            <span style={{ fontWeight: "bold", paddingLeft: "5px" }}>
-              ERROR: Invalid File Type
-            </span>
-            <span>Please upload a valid file here</span>
-          </div>
         )}
       </div>
     </div>
@@ -118,13 +122,15 @@ const Dropzone: FunctionComponent<IProps> = ({
 };
 const styles: { [name: string]: React.CSSProperties } = {
   dropZone: {
-    marginTop: "20px",
+    margin: "2rem 0",
     padding: "3rem",
     border: `2px dashed`,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
+    minHeight: "15rem",
+    textAlign: "center",
   },
   uploadIcon: {
     width: "66px",
@@ -139,6 +145,7 @@ const styles: { [name: string]: React.CSSProperties } = {
     justifyContent: "center",
     alignItems: "center",
     margin: "10px auto",
+    width: "100%",
   },
   alternativeAction: {
     color: colors.main.secondary,
@@ -159,6 +166,7 @@ const styles: { [name: string]: React.CSSProperties } = {
     display: "flex",
     flexDirection: "column",
     cursor: "pointer",
+    width: "100%",
   },
 };
 export default Dropzone;

@@ -96,7 +96,7 @@ const styles: { [name: string]: React.CSSProperties } = {
   action: {
     alignItems: "center",
     backgroundColor: "transparent",
-    color: colors.text.action,
+    color: colors.main.light,
     borderRadius: "3px",
     fontWeight: "bold",
     height: "40px",

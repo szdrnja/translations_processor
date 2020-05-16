@@ -70,9 +70,15 @@ const App: FunctionComponent = () => {
           to JSON in your desired i18n structure.
         </span>
 
-        <div style={styles.fileContainer}>
-          {currentFile && <span>Chosen File: {currentFile.name}</span>}
-        </div>
+        <p style={{ fontSize: "12px", color: "grey" }}>
+          Accepted file types are: {fileTypes}
+        </p>
+
+        {currentFile && (
+          <div style={styles.fileContainer}>
+            <span>Chosen File: {currentFile.name}</span>
+          </div>
+        )}
 
         <Dropzone
           setFiles={setFiles}
@@ -81,13 +87,9 @@ const App: FunctionComponent = () => {
           allowMultipleFiles={false}
         />
 
-        <p style={{ fontSize: "12px", color: "grey" }}>
-          Accepted file types are: {fileTypes}
-        </p>
-
         <ActionButton
-          style={{ marginRight: "10px", ...styles.button }}
-          buttonType={ACTION_BUTTON_TYPES.negate}
+          style={styles.uploadButton}
+          buttonType={ACTION_BUTTON_TYPES.mandatory}
           label="Upload File"
           action={uploadFile}
           active={isActive}
@@ -107,7 +109,6 @@ const styles: { [name: string]: React.CSSProperties } = {
     alignSelf: "center",
     maxWidth: "1400px",
     background: colors.main.primary,
-    marginBottom: "2rem",
   },
   contentContainer: {
     // flex: 1,
@@ -115,6 +116,7 @@ const styles: { [name: string]: React.CSSProperties } = {
     flexDirection: "column",
     margin: "auto",
     maxWidth: " 75%",
+    padding: "2rem",
   },
   title: {
     fontSize: "21px",
@@ -135,12 +137,12 @@ const styles: { [name: string]: React.CSSProperties } = {
     width: "50%",
     justifyContent: "space-between",
   },
+  uploadButton: { width: "50%", margin: "0 auto" },
   link: {
     color: colors.main.secondary,
     fontWeight: "bold",
     marginLeft: "15px",
   },
-  uploadButton: {},
 };
 
 export default App;
