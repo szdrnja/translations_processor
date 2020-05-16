@@ -1,25 +1,112 @@
 <!DOCTYPE html>
+<head>
+  <title>Translations Processor</title>
+
+  <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+    crossorigin="anonymous"
+  />
+
+  <link
+    href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"
+    rel="stylesheet"
+    id="bootstrap-css"
+  />
+
+  <link rel="stylesheet" href="index.css" />
+</head>
 
 <body>
-  <h1>Stefan I Love You</h1>
+  <div class="container">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h1>Translations Processor</h1>
+      </div>
+      <div class="panel-body">
+        <!-- Standard Form -->
+        <h4>Select a file to upload</h4>
+        <form
+          action=""
+          method="post"
+          enctype="multipart/form-data"
+          id="js-upload-form"
+        >
+          <div class="form-inline">
+            <div class="form-group">
+              <input
+                type="file"
+                id="inputFile"
+                name="inputFile"
+                accept=".xlsx, .xls"
+              />
+            </div>
+            <button
+              type="submit"
+              class="btn btn-sm btn-primary"
+              id="js-upload-submit"
+              onclick="uploadFile()"
+            >
+              Upload files
+            </button>
+          </div>
+        </form>
 
-  <label for="inputFile">Upload file to process:</label>
+        <div id="showOptions">
+          lemon
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /container -->
 
-  <input type="file" id="inputFile" name="inputFile" accept=".xlsx, .xls" />
+  <!-- <input type="file" id="inputFile" name="inputFile" accept=".xlsx, .xls" /> -->
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+  <script
+    src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+    integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+    crossorigin="anonymous"
+  ></script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
   <script src="translation_processor/processor.js"></script>
 
   <script lang="javascript">
-    const onInputFileChange = (event) => {
-      const file = event.target.files[0];
+    let file
+
+    const fileLoaded = (event) => {
+      file = event.target.files[0];
+      console.log(file);
+
+      if (file) {
+        showOptions(true)
+      } else {
+        showOptions(false)
+      }
+
+    }
+
+    const uploadFile = () => {
+
       console.log('fetched file ' + file.name);
       const reader = new FileReader()
 
       reader.onload = (e) => {
         const data = e.target.result;
-        const workbook = XLSX.read(
+        workbook = XLSX.read(
           data, {
           type: 'binary'
         });
@@ -33,7 +120,18 @@
       reader.readAsBinaryString(file);
     };
 
+    const showOptions = (hasFile) => {
+      var x = document.getElementById("myDIV");
+      if (hasFile === "none") {
+        x.style.display = "block";
+      } else {
+        x.style.display = "none";
+      }
+    }
+    inputFile = document.getElementById('showOptions');
+
+
     inputFile = document.getElementById('inputFile');
-    inputFile.addEventListener('change', onInputFileChange);
+    inputFile.addEventListener('change', fileLoaded);
   </script>
 </body>
