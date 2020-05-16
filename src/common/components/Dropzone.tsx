@@ -1,0 +1,157 @@
+import React, { FunctionComponent, useRef, useState } from "react";
+import { colors } from "../../assets/styles/variables";
+// import Translation from "common/components/Translation";
+import { PlusIcon, UploadIcon } from "../../assets/images";
+
+interface IProps {
+  setFiles: (file: any) => void;
+  filesSet: boolean;
+  acceptedFileTypes?: string;
+  allowMultipleFiles?: boolean;
+}
+
+const Dropzone: FunctionComponent<IProps> = ({
+  setFiles,
+  filesSet,
+  acceptedFileTypes,
+  allowMultipleFiles,
+}) => {
+  const [isDragOver, setIsDragOver] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showErrorMessage, setErrorMessage] = useState(false);
+
+  const checkType = (files: FileList) => {
+    setErrorMessage(false);
+    let isInvalidFile = false;
+
+    Array.from(files).forEach((file) => {
+      const validFileCheckList = [
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/vnd.ms-excel",
+      ];
+
+      if (!validFileCheckList.includes(file.type)) {
+        isInvalidFile = true;
+      }
+    });
+
+    if (isInvalidFile) {
+      setErrorMessage(true);
+    } else {
+      setFiles(files);
+    }
+  };
+  return (
+    <div
+      style={{
+        ...styles.dropZone,
+        borderColor: isDragOver ? colors.main.primary : colors.main.secondary,
+      }}
+      onDragOver={(event) => {
+        event.preventDefault();
+        setIsDragOver(true);
+      }}
+      onDragLeave={() => setIsDragOver(false)}
+      onDrop={(event) => {
+        event.preventDefault();
+        setIsDragOver(false);
+        checkType(event.dataTransfer.files);
+      }}
+    >
+      <UploadIcon style={styles.uploadIcon} />
+      <p style={styles.description}>Drag and Drop Here</p>
+      <p>or</p>
+
+      <input
+        accept={acceptedFileTypes}
+        type="file"
+        style={{ display: "none" }}
+        ref={fileInputRef}
+        onChange={({ target: { validity, files } }) =>
+          validity.valid && setFiles(files)
+        }
+        multiple={allowMultipleFiles}
+      />
+      {showErrorMessage && (
+        <div
+          style={{
+            background: "white",
+            color: colors.main.secondary,
+            padding: "10px 15px",
+            borderRadius: "3px",
+            fontSize: "14px",
+            border: "2px solid",
+          }}
+        >
+          <span
+            style={{ fontWeight: "bold", paddingLeft: "5px" }}
+            onClick={() => {
+              const currentRef = fileInputRef.current;
+              if (currentRef) {
+                currentRef.click();
+              }
+            }}
+          >
+            ERROR: Invalid File Type
+          </span>
+        </div>
+      )}
+      <div style={{ height: "40px", margin: "10px auto" }}>
+        {!isDragOver && (
+          <React.Fragment>
+            <div
+              style={styles.alternativeAtionContainer}
+              onClick={() => {
+                const currentRef = fileInputRef.current;
+                if (currentRef) {
+                  currentRef.click();
+                }
+              }}
+            >
+              <PlusIcon style={styles.alternativeActionIcon} />
+              <span style={styles.alternativeAction}>
+                {filesSet ? "Upload More Files" : "Upload"}
+              </span>
+            </div>
+          </React.Fragment>
+        )}
+      </div>
+    </div>
+  );
+};
+const styles: { [name: string]: React.CSSProperties } = {
+  dropZone: {
+    marginTop: "20px",
+    padding: "35px",
+    border: `2px dashed`,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  uploadIcon: {
+    width: "66px",
+    height: "66px",
+  },
+  description: {
+    marginBottom: "15px",
+  },
+  alternativeAtionContainer: {
+    cursor: "pointer",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    margin: "10px auto",
+  },
+  alternativeAction: {
+    color: colors.main.secondary,
+    marginLeft: "5px",
+    fontWeight: "bold",
+  },
+  alternativeActionIcon: {
+    color: colors.main.secondary,
+    width: "10px",
+    height: "10px",
+  },
+};
+export default Dropzone;

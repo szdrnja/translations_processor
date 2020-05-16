@@ -1,3 +1,5 @@
+import * as XLSX from "xlsx";
+
 const download = (content, name, type) => {
   const file = new Blob([content], { type: type });
   var isIE = /*@cc_on!@*/ false || !!document.documentMode;
@@ -42,7 +44,7 @@ const processRow = (db, row, keySeparator, keyColumn, indexColumn) => {
   }
   const keylist = row[keyColumn].split(keySeparator);
   for (const [key, value] of Object.entries(row)) {
-    if (key !== keyColumn && key != indexColumn) {
+    if (key !== keyColumn && key !== indexColumn) {
       populate(db, [key].concat(keylist), value);
     }
   }
