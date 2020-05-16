@@ -1,6 +1,6 @@
 export const colors = {
   main: {
-    primary: "#141b30", // dark blue
+    primary: "rgb(255, 146, 105)", // orange
     secondary: "#63bbc3", // light blue
     light: "#ffffff", // white
     medium: "#f9f9f9", // light gray

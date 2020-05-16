@@ -1,25 +1,18 @@
 import React, { FunctionComponent, useState } from "react";
-// import { connect } from "react-redux";
-// import { Dispatch } from "redux";
-// import { saveLogo } from "packages/HotelConfig/actions";
 import { colors } from "./assets/styles";
 import Dropzone from "./common/components/Dropzone";
-import Upload from "./common/components/Upload";
 import { processExcelData } from "./processor-DONTTOUCH";
-
-// import { IState } from "store/store";
 import * as XLSX from "xlsx";
 import ActionButton from "./common/components/ActionButton";
 import { ACTION_BUTTON_TYPES } from "./common/constants";
 
-interface IProps {
-  // uploadLogo: ({ hotel }: { hotel: IHotel }, file: File) => void;
-}
-
-const App: FunctionComponent<IProps> = () => {
-  const [currentFile, setCurrentFile] = useState<any>();
+const App: FunctionComponent = () => {
   const fileTypes = ".xlsx,.xls";
+
+  const [currentFile, setCurrentFile] = useState<any>();
   const [error, setError] = useState(false);
+  const [isActive, setButtonStatus] = useState(false);
+
   const setFiles = (files: FileList) => {
     if (
       files.length > 0 &&
@@ -29,14 +22,15 @@ const App: FunctionComponent<IProps> = () => {
     ) {
       setError(false);
       setCurrentFile(files[0]);
+      setButtonStatus(true);
     } else {
       setError(true);
       setCurrentFile(null);
+      setButtonStatus(false);
     }
   };
 
   const uploadFile = () => {
-    console.log("fetched file " + currentFile);
     const reader = new FileReader();
 
     reader.onload = (e) => {
@@ -54,10 +48,20 @@ const App: FunctionComponent<IProps> = () => {
     };
 
     reader.readAsBinaryString(currentFile);
+    setCurrentFile(null);
+    setButtonStatus(false);
   };
 
   return (
-    <div style={styles.container}>
+    <>
+      <div style={styles.headerContainer}>
+        <div
+          onClick={() => alert("sydney loves stefan")}
+          style={{ display: "flex", cursor: "pointer" }}
+        >
+          <span style={styles.betaTag}>Emdomy</span>
+        </div>
+      </div>
       <div style={styles.contentContainer}>
         <span style={styles.title}>Translation Processor</span>
 
@@ -68,25 +72,6 @@ const App: FunctionComponent<IProps> = () => {
 
         <div style={styles.fileContainer}>
           {currentFile && <span>Chosen File: {currentFile.name}</span>}
-
-          <div style={styles.buttonContainer}>
-            <Upload
-              setFiles={setFiles}
-              label={currentFile ? "Reselect File" : "Choose File"}
-              isButton={true}
-              style={styles.link}
-              acceptedFileTypes={fileTypes}
-            />
-
-            {currentFile && (
-              <ActionButton
-                style={styles.uploadButton}
-                buttonType={ACTION_BUTTON_TYPES.negate}
-                label="Upload File"
-                action={uploadFile}
-              />
-            )}
-          </div>
         </div>
 
         <Dropzone
@@ -96,31 +81,40 @@ const App: FunctionComponent<IProps> = () => {
           allowMultipleFiles={false}
         />
 
+        <p style={{ fontSize: "12px", color: "grey" }}>
+          Accepted file types are: {fileTypes}
+        </p>
+
         <ActionButton
           style={{ marginRight: "10px", ...styles.button }}
           buttonType={ACTION_BUTTON_TYPES.negate}
           label="Upload File"
           action={uploadFile}
+          active={isActive}
         />
 
         {error && currentFile && <p style={styles.link}>Incorrect file type</p>}
       </div>
-    </div>
+    </>
   );
 };
 
 const styles: { [name: string]: React.CSSProperties } = {
-  container: {
-    padding: "30px",
-    backgroundColor: "#fff",
-    flex: 1,
+  headerContainer: {
     display: "flex",
+    justifyContent: "space-between",
+    padding: "30px",
+    alignSelf: "center",
+    maxWidth: "1400px",
+    background: colors.main.primary,
+    marginBottom: "2rem",
   },
   contentContainer: {
-    flex: 1,
+    // flex: 1,
     display: "flex",
-    maxWidth: "715px",
     flexDirection: "column",
+    margin: "auto",
+    maxWidth: " 75%",
   },
   title: {
     fontSize: "21px",
@@ -148,11 +142,5 @@ const styles: { [name: string]: React.CSSProperties } = {
   },
   uploadButton: {},
 };
-
-// const mapDispatchToProps = (dispatch: Dispatch) => ({
-//   uploadLogo: ({ hotel }: { hotel: IHotel }, file: File) => {
-//     dispatch(saveLogo({ hotel }, file));
-//   },
-// });
 
 export default App;

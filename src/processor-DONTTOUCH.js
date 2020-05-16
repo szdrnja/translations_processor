@@ -65,7 +65,6 @@ export const processExcelData = (
     XL_row_object.forEach((row) => {
       processRow(db, row, ".", keyColumn, indexColumn);
     });
-    console.log(db);
     download(JSON.stringify(db), "processed.json", "application/json");
   });
 };

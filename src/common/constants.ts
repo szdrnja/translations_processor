@@ -16,7 +16,8 @@ export const TOAST_TYPES = {
   error: {
     generic: {
       key: "GENERIC_ERROR",
-      messageKey: "An error occurred. Please try again or contact support",
+      messageKey:
+        "An error occurred when processing your file. Please try again or contact support if the problem persists.",
       actionKey: "",
       displayType: "ERROR",
     },
