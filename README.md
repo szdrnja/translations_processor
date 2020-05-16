@@ -1,7 +1,6 @@
 # Translations Processor
 
 Hosting a github page for a simple translation processing tool.
-
 https://zdrnjabk4.github.io/translations_processor/
 
 ### Specifications
