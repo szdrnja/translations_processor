@@ -1,6 +1,7 @@
 {
   "homepage": "https://zdrnjabk4.github.io/translations_processor/",
   "name": "tp-react",
+  "author": "Stefan Zdrnja & Sydney Thomas",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
