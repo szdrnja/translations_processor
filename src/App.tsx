@@ -6,55 +6,47 @@ import Dropzone from "./common/components/Dropzone";
 import FileSettings from "./common/components/FileSettings";
 
 // Actions
-import { processExcelData } from "./processor-DONTTOUCH";
+import { fetchHeaders, processFile, EXT_PROCESSORS } from "./processor";
+// import { processExcelData } from "./processor-DONTTOUCH";
 
 // Other
 import { colors } from "./assets/styles";
-import * as XLSX from "xlsx";
+// import * as XLSX from "xlsx";
 import { ACTION_BUTTON_TYPES } from "./common/constants";
 
 const App: FunctionComponent = () => {
-  const fileTypes = ".xlsx,.xls";
+  const fileTypes = Object.keys(EXT_PROCESSORS).join(' ');
 
   const [currentFile, setCurrentFile] = useState<any>();
   const [error, setError] = useState(false);
   const [isActive, setButtonStatus] = useState(false);
+  const [headers, setHeaders] = useState([]);
 
   const setFiles = (files: FileList) => {
-    if (
-      files.length > 0 &&
-      (files[0].type ===
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
-        files[0].type === "application/vnd.ms-excel")
-    ) {
-      setError(false);
+    if (files.length) {
       setCurrentFile(files[0]);
       setButtonStatus(true);
-    } else {
-      setError(true);
-      setCurrentFile(null);
-      setButtonStatus(false);
+      fetchHeaders(files[0]).then((rc) => {
+        if (rc.statusCode) {
+          // error handling
+          console.log(rc.errorMessage);
+          return;
+        }
+        setHeaders(rc.data);
+      });
     }
   };
 
   const uploadFile = () => {
-    const reader = new FileReader();
-
-    reader.onload = (e) => {
-      if (e && e.target && e.target.result) {
-        const data = e.target.result;
-        const workbook = XLSX.read(data, {
-          type: "binary",
-        });
-        processExcelData(workbook, ".");
+    processFile(currentFile, headers, 1, [2, 3], '.').then(rc => {
+      if (rc.statusCode) {
+        // show error log
+        console.log(rc.errorMessage);
+        return;
       }
-    };
-
-    reader.onerror = function (ex) {
-      console.log(ex);
-    };
-
-    reader.readAsBinaryString(currentFile);
+      let data = rc.data;
+      console.log('data', data);
+    });
     setCurrentFile(null);
     setButtonStatus(false);
   };
@@ -77,8 +69,6 @@ const App: FunctionComponent = () => {
           to JSON in your desired i18n structure.
         </span>
 
-        {/* <FileSettings /> */}
-
         {currentFile && (
           <div style={styles.fileContainer}>
             <span>Chosen File: {currentFile.name}</span>
@@ -89,11 +79,13 @@ const App: FunctionComponent = () => {
           Accepted file types are: {fileTypes}
         </p>
 
-        <Dropzone
+        {!currentFile && (<Dropzone
           setFiles={setFiles}
           acceptedFileTypes={fileTypes}
           allowMultipleFiles={false}
-        />
+        />)}
+
+        {currentFile && (<FileSettings />)}
 
         <ActionButton
           style={styles.uploadButton}
