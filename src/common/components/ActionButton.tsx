@@ -9,52 +9,39 @@ interface IProps {
   buttonType: string;
   style?: any;
   active?: boolean;
-  isTest?: boolean;
   icon?: any;
 }
 
-const getBorderColor = (type: string, isTest?: boolean) => {
-  if (isTest) {
-    return colors.highlight.inactive;
-  } else {
-    switch (type) {
-      case ACTION_BUTTON_TYPES.optional:
-        return colors.highlight.info;
-      case ACTION_BUTTON_TYPES.mandatory:
-      case ACTION_BUTTON_TYPES.negate:
-        return "transparent";
-    }
+const getBorderColor = (type: string) => {
+  switch (type) {
+    case ACTION_BUTTON_TYPES.optional:
+      return colors.highlight.info;
+    case ACTION_BUTTON_TYPES.mandatory:
+    case ACTION_BUTTON_TYPES.negate:
+      return "transparent";
   }
 };
 
-const getColor = (type: string, isTest?: boolean) => {
-  if (isTest) {
-    return colors.highlight.inactive;
-  } else {
-    switch (type) {
-      case ACTION_BUTTON_TYPES.mandatory:
-        return "#fff";
-      case ACTION_BUTTON_TYPES.optional:
-        return colors.highlight.info;
+const getColor = (type: string) => {
+  switch (type) {
+    case ACTION_BUTTON_TYPES.mandatory:
+      return "#fff";
+    case ACTION_BUTTON_TYPES.optional:
+      return colors.highlight.info;
 
-      case ACTION_BUTTON_TYPES.negate:
-        return "#fff";
-    }
+    case ACTION_BUTTON_TYPES.negate:
+      return "#fff";
   }
 };
 
-const getBackgroundColor = (type: string, isTest?: boolean) => {
-  if (isTest) {
-    return "transparent";
-  } else {
-    switch (type) {
-      case ACTION_BUTTON_TYPES.mandatory:
-        return colors.highlight.info;
-      case ACTION_BUTTON_TYPES.optional:
-        return "#fff";
-      case ACTION_BUTTON_TYPES.negate:
-        return colors.highlight.inactive;
-    }
+const getBackgroundColor = (type: string) => {
+  switch (type) {
+    case ACTION_BUTTON_TYPES.mandatory:
+      return colors.highlight.info;
+    case ACTION_BUTTON_TYPES.optional:
+      return "#fff";
+    case ACTION_BUTTON_TYPES.negate:
+      return colors.highlight.inactive;
   }
 };
 
@@ -64,15 +51,14 @@ const ActionButton: FunctionComponent<IProps> = ({
   buttonType,
   style = {},
   active = true,
-  isTest,
   icon,
 }) => (
   <button
     style={{
       ...styles.action,
-      border: `2px solid ${getBorderColor(buttonType, isTest)}`,
+      border: `2px solid ${getBorderColor(buttonType)}`,
       ...style,
-      backgroundColor: getBackgroundColor(buttonType, isTest),
+      backgroundColor: getBackgroundColor(buttonType),
       opacity: active ? 1 : 0.3,
     }}
     disabled={!active}
@@ -83,7 +69,7 @@ const ActionButton: FunctionComponent<IProps> = ({
   >
     <span
       style={{
-        color: getColor(buttonType, isTest),
+        color: getColor(buttonType),
       }}
     >
       {label}
@@ -103,8 +89,7 @@ const styles: { [name: string]: React.CSSProperties } = {
     fontSize: "16px",
     justifyContent: "center",
     display: "flex",
-    paddingLeft: "13px",
-    paddingRight: "13px",
+    cursor: "pointer",
   },
   actionImage: {
     flexShrink: 0,

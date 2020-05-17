@@ -4,14 +4,12 @@ import { PlusIcon, UploadIcon } from "../../assets/images";
 
 interface IProps {
   setFiles: (file: any) => void;
-  filesSet: boolean;
   acceptedFileTypes?: string;
   allowMultipleFiles?: boolean;
 }
 
 const Dropzone: FunctionComponent<IProps> = ({
   setFiles,
-  filesSet,
   acceptedFileTypes,
   allowMultipleFiles,
 }) => {
@@ -122,7 +120,6 @@ const Dropzone: FunctionComponent<IProps> = ({
 };
 const styles: { [name: string]: React.CSSProperties } = {
   dropZone: {
-    margin: "2rem 0",
     padding: "3rem",
     border: `2px dashed`,
     display: "flex",
@@ -166,7 +163,6 @@ const styles: { [name: string]: React.CSSProperties } = {
     display: "flex",
     flexDirection: "column",
     cursor: "pointer",
-    width: "100%",
   },
 };
 export default Dropzone;

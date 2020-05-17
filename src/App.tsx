@@ -1,9 +1,16 @@
 import React, { FunctionComponent, useState } from "react";
-import { colors } from "./assets/styles";
-import Dropzone from "./common/components/Dropzone";
-import { processExcelData } from "./processor-DONTTOUCH";
-import * as XLSX from "xlsx";
+
+// Components
 import ActionButton from "./common/components/ActionButton";
+import Dropzone from "./common/components/Dropzone";
+import FileSettings from "./common/components/FileSettings";
+
+// Actions
+import { processExcelData } from "./processor-DONTTOUCH";
+
+// Other
+import { colors } from "./assets/styles";
+import * as XLSX from "xlsx";
 import { ACTION_BUTTON_TYPES } from "./common/constants";
 
 const App: FunctionComponent = () => {
@@ -70,9 +77,7 @@ const App: FunctionComponent = () => {
           to JSON in your desired i18n structure.
         </span>
 
-        <p style={{ fontSize: "12px", color: "grey" }}>
-          Accepted file types are: {fileTypes}
-        </p>
+        <FileSettings />
 
         {currentFile && (
           <div style={styles.fileContainer}>
@@ -80,9 +85,12 @@ const App: FunctionComponent = () => {
           </div>
         )}
 
+        <p style={{ fontSize: "12px", color: "grey" }}>
+          Accepted file types are: {fileTypes}
+        </p>
+
         <Dropzone
           setFiles={setFiles}
-          filesSet={false}
           acceptedFileTypes={fileTypes}
           allowMultipleFiles={false}
         />
@@ -123,7 +131,6 @@ const styles: { [name: string]: React.CSSProperties } = {
     lineHeight: "22px",
   },
   description: {
-    fontSize: "15px",
     lineHeight: "23px",
     marginTop: "15px",
   },
@@ -137,7 +144,7 @@ const styles: { [name: string]: React.CSSProperties } = {
     width: "50%",
     justifyContent: "space-between",
   },
-  uploadButton: { width: "50%", margin: "0 auto" },
+  uploadButton: { width: "50%", margin: "2rem auto" },
   link: {
     color: colors.main.secondary,
     fontWeight: "bold",
