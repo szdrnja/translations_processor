@@ -1,74 +1,91 @@
 import React, { FunctionComponent, useState } from "react";
-import {
-  IFileSettings,
-  notationTypeList,
-  notationType,
-} from "../../common/models";
+
 import { DeleteIcon } from "../../assets/images";
 
-import RadioButtonsGroup from "./RadioButtonGroup";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
 import ActionButton from "./ActionButton";
 import { ACTION_BUTTON_TYPES } from "../constants";
+
+// Materiial UI
+import Switch from "@material-ui/core/Switch";
+import TextField from "@material-ui/core/TextField";
+import Checkbox from "@material-ui/core/Checkbox";
 
 // TODO: fix any for function and style below
 interface IProps {
   currentFile: File;
   deleteFile: () => void;
   uploadFile: () => void;
+  headers: Array<string>;
 }
+
+export const getColumnsIndices = (headers: Array<string>) => {
+  let columnsArray: Array<number> = [];
+  for (let i = 1; i < headers.length; i++) {
+    columnsArray.push(i);
+  }
+  return columnsArray;
+};
 
 const FileSettings: FunctionComponent<IProps> = ({
   currentFile,
   deleteFile,
   uploadFile,
+  headers,
 }) => {
-  const [state, setState] = React.useState({
-    checkedA: true,
-    checkedB: true,
-    checkedF: true,
-    checkedG: true,
-  });
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setState({ ...state, [event.target.name]: event.target.checked });
+  let defaultFileSettings = {
+    headers,
+    keyColumn: 0,
+    columns: getColumnsIndices(headers),
+    keySeparator: ".",
+    containsHeaders: true,
+    filePerLanguage: true,
+    languageFirst: false,
   };
 
-  const [userFileSettings, setUserFileSettings] = useState<IFileSettings>({
-    outputName: "New File",
-    headers: [],
-    keyColumn: 1,
-    columnsToProcess: [4, 6, 8],
-    nestingSettings: {
-      on: false,
-      notation: null,
-      langFirst: false,
-    },
-    singleFile: {
-      on: false,
-    },
-  });
-  console.log(userFileSettings);
+  const [fileSettings, setFileSettings] = useState(defaultFileSettings);
 
-  const options = [
-    [
-      { category: "Nesting", label: "With Nesting" },
-      { category: "Nesting", label: "Without Nesting" },
-    ],
-    [
-      { category: "Notation", label: "Dot Notation" },
-      { category: "Notation", label: "Underscore Notation" },
-    ],
-    [
-      { category: "Number of Files", label: "Out into a single File" },
-      {
-        category: "Number of Files",
-        label: "Output into a .json per language",
-      },
-    ],
-  ];
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFileSettings({
+      ...fileSettings,
+      [event.target.name]: event.target.checked,
+    });
+  };
+
+  const renameHeader = (newHeader: string, index: number) => {
+    console.log(newHeader);
+
+    const x = fileSettings.headers.splice(index, 1, newHeader);
+
+    setFileSettings({
+      ...fileSettings,
+      headers: fileSettings.headers,
+    });
+  };
+
+  const processColumns = (columnIndex: number) => {
+    let newColArray = [...fileSettings.columns];
+    console.log(newColArray);
+
+    if (fileSettings.columns.includes(columnIndex)) {
+      const index = newColArray.indexOf(columnIndex);
+
+      if (index > -1) {
+        newColArray.splice(index, 1);
+      }
+    } else {
+      // do i need to reorder these?
+      newColArray.push(columnIndex);
+    }
+
+    setFileSettings({
+      ...fileSettings,
+      columns: newColArray,
+    });
+  };
+
+  const selectKeyColumn = () => {};
+
+  console.log(fileSettings);
 
   return (
     <div style={styles.settingsContainer}>
@@ -84,34 +101,51 @@ const FileSettings: FunctionComponent<IProps> = ({
 
       <h3>Settings</h3>
       <div>
-        <FormGroup row>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={state.checkedA}
-                onChange={handleChange}
-                name="checkedA"
-                color="default"
-              />
-            }
-            label="Nesting?"
+        <div>
+          {/* containsHeaders --> Toggle - if file data contains headers (defaults) - loads first row as headers, if off, clear #1 only if !dirty */}
+          <h4>File Contains Headers</h4>
+          <Switch
+            checked={fileSettings.containsHeaders}
+            onChange={handleChange}
+            name="containsHeaders"
+            inputProps={{ "aria-label": "secondary checkbox" }}
           />
-          <div style={styles.radioContainer}>
-            <h4>Notation Types</h4>
-            <RadioButtonsGroup
-              key={Date.now()}
-              // title={"Notation Types"}
-              defaultValue={notationTypeList[0]}
-              options={notationTypeList}
-            ></RadioButtonsGroup>
-            <RadioButtonsGroup
-              key={Date.now()}
-              // title={"Notation Types"}
-              defaultValue={notationTypeList[notationTypeList.length - 1]}
-              options={notationTypeList}
-            ></RadioButtonsGroup>
+          {/* 1. headers --> row of headers all as prefilled input boxes  */}
+          <div style={{ display: "flex" }}>
+            {headers.map((header: string, index: number) => {
+              return (
+                <div key={index}>
+                  <TextField
+                    key={index + 50}
+                    value={header}
+                    variant="outlined"
+                    disabled={fileSettings.containsHeaders}
+                    onChange={(e) => {
+                      renameHeader(e.target.value, index);
+                    }}
+                  />
+                  {index}
+                  <Checkbox
+                    key={index + 100}
+                    checked={fileSettings.columns.includes(index)}
+                    onClick={() => processColumns(index)}
+                    inputProps={{ "aria-label": "primary checkbox" }}
+                  />
+                </div>
+              );
+            })}
           </div>
-        </FormGroup>
+          {/* 2. columns --> all with checkboxes underneath in order to select which column they want to process (default all checked except translation key)*/}
+          {/* 3. keyColumn =-> radio buttons to select which column holds the translation keys (this cannot have a checked box)*/}
+        </div>
+        {/* 4. key separator (nesting) --> drop down of all the non-alphanumeric characters that exist within the first row of selected key column */}
+
+        <div>
+          {/* filePerLang -->  Toggle -drop down of all the non-alphanumeric characters that exist within the first row of selected key column */}
+          {/* langFirst --> if !filePerLang, present option to select if the lang is first or last in the nest  */}
+        </div>
+
+        {/* 4. filename --> input field */}
       </div>
       <ActionButton
         style={styles.uploadButton}

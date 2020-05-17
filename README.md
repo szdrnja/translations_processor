@@ -14,6 +14,8 @@ https://zdrnjabk4.github.io/translations_processor/
 - [ ] (_if not_) Specify nesting of the language (_first_ or _last_). \* If key is not separated (nested) specify on what character to merge the language with the translation key.
       ex. '.' -> `language`.`translation_key`
 
-## Sources
+## Resources
 
-Icons from: https://www.svgrepo.com/vectors/
+- Icons from: https://www.svgrepo.com/vectors/
+- React to GitHub Pages: https://blog.usejournal.com/how-to-deploy-your-react-app-into-github-pages-b2c96292b18e, https://github.com/gitname/react-gh-pages
+- Common MIME Filetypes: https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types

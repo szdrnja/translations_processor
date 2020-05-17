@@ -20,13 +20,12 @@ const App: FunctionComponent = () => {
   const [newFile, setNewFile] = useState<any>();
   const [filePreview, setPreview] = useState<any>();
   const [headers, setHeaders] = useState([]);
+  const [settings, setFileSettings] = useState<any>();
 
   const setFiles = (files: FileList) => {
     setNewFile(null);
 
     if (files.length) {
-      setCurrentFile(files[0]);
-
       fetchHeaders(files[0]).then((rc) => {
         if (rc.statusCode) {
           // error handling
@@ -34,12 +33,9 @@ const App: FunctionComponent = () => {
           return;
         }
         setHeaders(rc.data);
+        setCurrentFile(files[0]);
       });
     }
-  };
-
-  const deleteFile = () => {
-    setCurrentFile(null);
   };
 
   const uploadFile = () => {
@@ -52,7 +48,7 @@ const App: FunctionComponent = () => {
       setNewFile(rc.data);
       setPreview(JSON.stringify(rc.data, null, 2));
     });
-    deleteFile();
+    setCurrentFile(null);
   };
 
   const downloadFile = () => {
@@ -88,7 +84,7 @@ const App: FunctionComponent = () => {
           onClick={() => reset()}
           style={{ display: "flex", cursor: "pointer" }}
         >
-          <span style={styles.betaTag}>Emdomy</span>
+          <h3>Stefan Loves Sydney</h3>
         </div>
       </div>
       <div style={styles.contentContainer}>
@@ -111,8 +107,9 @@ const App: FunctionComponent = () => {
         {currentFile && (
           <FileSettings
             currentFile={currentFile}
-            deleteFile={deleteFile}
+            deleteFile={reset}
             uploadFile={uploadFile}
+            headers={headers}
           />
         )}
 
@@ -152,13 +149,11 @@ const styles: { [name: string]: React.CSSProperties } = {
   headerContainer: {
     display: "flex",
     justifyContent: "space-between",
-    padding: "30px",
+    padding: "1rem",
     alignSelf: "center",
-    maxWidth: "1400px",
     background: colors.main.primary,
   },
   contentContainer: {
-    // flex: 1,
     display: "flex",
     flexDirection: "column",
     margin: "auto",
@@ -174,10 +169,9 @@ const styles: { [name: string]: React.CSSProperties } = {
     marginTop: "15px",
   },
   previewContainer: {
-    overflow: "hidden",
+    overflow: "auto",
     maxHeight: "20rem",
     padding: "1rem",
-    overflowY: "auto",
   },
   downloadButton: {
     width: "50%",
