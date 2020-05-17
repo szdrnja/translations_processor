@@ -30,14 +30,6 @@ class Processor {
     });
   }
 
-  readFileAsync() {
-    throw 'Not implemented - readFileAsync';
-  }
-  read() {
-    /// needs to populate data and headers
-    throw 'Not implemented - read';
-  }
-
   process(keyColumn, columns, keySeparator, containsHeaders, filePerLanguage, languageFirst) {
     const start = containsHeaders ? 1 : 0;
     debug('this._data', this._data);
@@ -74,7 +66,6 @@ class Processor {
 
   populate(keylist, data) {
     let cur = this._db;
-    let errors = [];
     for (let i = 0; i < keylist.length - 1; i++) {
       const k = keylist[i].trim();
       if (!(k in cur)) {
@@ -108,7 +99,7 @@ class ExcelProcessor extends Processor {
       let xlsx = XLSX.read(data, { type: 'binary' });
       this._data = [];
       let headers = null;
-      for (const [key, value] of Object.entries(xlsx.Sheets)) {
+      for (const value of Object.values(xlsx.Sheets)) {
         // sheet_to_row_object_array
         let sheet = this._data.concat(XLSX.utils.sheet_to_json(value, {defval:null}));
         for (let i in sheet) {
@@ -224,7 +215,7 @@ class Utils {
         ch = ch & (0x3F >> extra);
         for (; extra > 0; extra -= 1) {
           var chx = data[index++];
-          if ((chx & 0xC0) != 0x80)
+          if ((chx & 0xC0) !== 0x80)
             return null;
 
           ch = (ch << 6) | (chx & 0x3F);

@@ -4,15 +4,27 @@ import {
   notationTypeList,
   notationType,
 } from "../../common/models";
+import { DeleteIcon } from "../../assets/images";
+
 import RadioButtonsGroup from "./RadioButtonGroup";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
+import ActionButton from "./ActionButton";
+import { ACTION_BUTTON_TYPES } from "../constants";
 
 // TODO: fix any for function and style below
-interface IProps {}
+interface IProps {
+  currentFile: File;
+  deleteFile: () => void;
+  uploadFile: () => void;
+}
 
-const FileSettings: FunctionComponent<IProps> = () => {
+const FileSettings: FunctionComponent<IProps> = ({
+  currentFile,
+  deleteFile,
+  uploadFile,
+}) => {
   const [state, setState] = React.useState({
     checkedA: true,
     checkedB: true,
@@ -60,6 +72,16 @@ const FileSettings: FunctionComponent<IProps> = () => {
 
   return (
     <div style={styles.settingsContainer}>
+      <div style={{ marginTop: "17px" }}>
+        <span style={{ marginRight: "1rem" }}>
+          <b>Chosen File:</b> {currentFile.name}
+        </span>
+        <DeleteIcon
+          onClick={deleteFile}
+          style={{ maxWidth: "1rem", cursor: "pointer" }}
+        />
+      </div>
+
       <h3>Settings</h3>
       <div>
         <FormGroup row>
@@ -91,6 +113,12 @@ const FileSettings: FunctionComponent<IProps> = () => {
           </div>
         </FormGroup>
       </div>
+      <ActionButton
+        style={styles.uploadButton}
+        buttonType={ACTION_BUTTON_TYPES.mandatory}
+        label="Upload File"
+        action={uploadFile}
+      />
     </div>
   );
 };

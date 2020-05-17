@@ -46,44 +46,63 @@ const Dropzone: FunctionComponent<IProps> = ({
   }
 
   return (
-    <div
-      style={{
-        ...styles.dropZone,
-        borderColor: isDragOver ? colors.main.primary : colors.main.secondary,
-      }}
-      onDragOver={(event) => {
-        event.preventDefault();
-        setIsDragOver(true);
-      }}
-      onDragLeave={() => setIsDragOver(false)}
-      onDrop={(event) => {
-        event.preventDefault();
-        setIsDragOver(false);
-        checkType(event.dataTransfer.files);
-      }}
-    >
-      <UploadIcon style={styles.uploadIcon} />
-      <h3 style={styles.description}>Drag and Drop Here</h3>
+    <>
+      <p style={{ fontSize: "12px", color: "grey" }}>
+        Accepted file types are: {acceptedFileTypes}
+      </p>
+      <div
+        style={{
+          ...styles.dropZone,
+          borderColor: isDragOver ? colors.main.primary : colors.main.secondary,
+        }}
+        onDragOver={(event) => {
+          event.preventDefault();
+          setIsDragOver(true);
+        }}
+        onDragLeave={() => setIsDragOver(false)}
+        onDrop={(event) => {
+          event.preventDefault();
+          setIsDragOver(false);
+          checkType(event.dataTransfer.files);
+        }}
+      >
+        <UploadIcon style={styles.uploadIcon} />
+        <h3 style={styles.description}>Drag and Drop Here</h3>
 
-      <input
-        accept={acceptedFileTypes}
-        type="file"
-        style={{ display: "none" }}
-        ref={fileInputRef}
-        onChange={({ target: { validity, files } }) =>
-          validity.valid && setFiles(files)
-        }
-        multiple={allowMultipleFiles}
-      />
+        <input
+          accept={acceptedFileTypes}
+          type="file"
+          style={{ display: "none" }}
+          ref={fileInputRef}
+          onChange={({ target: { validity, files } }) =>
+            validity.valid && setFiles(files)
+          }
+          multiple={allowMultipleFiles}
+        />
 
-      <div style={{ margin: "10px auto", display: "contents" }}>
-        {!isDragOver && (
-          <>
-            {!showErrorMessage && (
-              <>
-                <p style={{ margin: "0 0 1.5rem 0" }}>or</p>
+        <div style={{ margin: "10px auto", display: "contents" }}>
+          {!isDragOver && (
+            <>
+              {!showErrorMessage && (
+                <>
+                  <p style={{ margin: "0 0 1.5rem 0" }}>or</p>
+                  <div
+                    style={styles.alternativeAtionContainer}
+                    onClick={() => {
+                      const currentRef = fileInputRef.current;
+                      if (currentRef) {
+                        currentRef.click();
+                      }
+                    }}
+                  >
+                    <PlusIcon style={styles.alternativeActionIcon} />
+                    <span style={styles.alternativeAction}>Choose File</span>
+                  </div>
+                </>
+              )}
+              {showErrorMessage && (
                 <div
-                  style={styles.alternativeAtionContainer}
+                  style={styles.errorMessage}
                   onClick={() => {
                     const currentRef = fileInputRef.current;
                     if (currentRef) {
@@ -91,31 +110,17 @@ const Dropzone: FunctionComponent<IProps> = ({
                     }
                   }}
                 >
-                  <PlusIcon style={styles.alternativeActionIcon} />
-                  <span style={styles.alternativeAction}>Choose File</span>
+                  <span style={{ fontWeight: "bold", paddingLeft: "5px" }}>
+                    ERROR: Invalid File Type
+                  </span>
+                  <span>Please upload a valid file here</span>
                 </div>
-              </>
-            )}
-            {showErrorMessage && (
-              <div
-                style={styles.errorMessage}
-                onClick={() => {
-                  const currentRef = fileInputRef.current;
-                  if (currentRef) {
-                    currentRef.click();
-                  }
-                }}
-              >
-                <span style={{ fontWeight: "bold", paddingLeft: "5px" }}>
-                  ERROR: Invalid File Type
-                </span>
-                <span>Please upload a valid file here</span>
-              </div>
-            )}
-          </>
-        )}
+              )}
+            </>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 const styles: { [name: string]: React.CSSProperties } = {

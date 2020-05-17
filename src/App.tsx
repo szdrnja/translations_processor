@@ -1,7 +1,6 @@
 import React, { FunctionComponent, useState } from "react";
 
 // Components
-import ActionButton from "./common/components/ActionButton";
 import Dropzone from "./common/components/Dropzone";
 import FileSettings from "./common/components/FileSettings";
 
@@ -12,13 +11,11 @@ import { fetchHeaders, processFile, EXT_PROCESSORS } from "./processor";
 // Other
 import { colors } from "./assets/styles";
 // import * as XLSX from "xlsx";
-import { ACTION_BUTTON_TYPES } from "./common/constants";
 
 const App: FunctionComponent = () => {
-  const fileTypes = Object.keys(EXT_PROCESSORS).join(' ');
+  const fileTypes = "." + Object.keys(EXT_PROCESSORS).join(" .");
 
   const [currentFile, setCurrentFile] = useState<any>();
-  const [error, setError] = useState(false);
   const [isActive, setButtonStatus] = useState(false);
   const [headers, setHeaders] = useState([]);
 
@@ -37,18 +34,22 @@ const App: FunctionComponent = () => {
     }
   };
 
+  const deleteFile = () => {
+    setCurrentFile(null);
+    setButtonStatus(false);
+  };
+
   const uploadFile = () => {
-    processFile(currentFile, headers, 1, [2, 3], '.').then(rc => {
+    processFile(currentFile, headers, 1, [2, 3], ".").then((rc) => {
       if (rc.statusCode) {
         // show error log
         console.log(rc.errorMessage);
         return;
       }
       let data = rc.data;
-      console.log('data', data);
+      console.log("data", data);
     });
-    setCurrentFile(null);
-    setButtonStatus(false);
+    deleteFile();
   };
 
   return (
@@ -69,33 +70,21 @@ const App: FunctionComponent = () => {
           to JSON in your desired i18n structure.
         </span>
 
-        {currentFile && (
-          <div style={styles.fileContainer}>
-            <span>Chosen File: {currentFile.name}</span>
-          </div>
+        {!currentFile && (
+          <Dropzone
+            setFiles={setFiles}
+            acceptedFileTypes={fileTypes}
+            allowMultipleFiles={false}
+          />
         )}
 
-        <p style={{ fontSize: "12px", color: "grey" }}>
-          Accepted file types are: {fileTypes}
-        </p>
-
-        {!currentFile && (<Dropzone
-          setFiles={setFiles}
-          acceptedFileTypes={fileTypes}
-          allowMultipleFiles={false}
-        />)}
-
-        {currentFile && (<FileSettings />)}
-
-        <ActionButton
-          style={styles.uploadButton}
-          buttonType={ACTION_BUTTON_TYPES.mandatory}
-          label="Upload File"
-          action={uploadFile}
-          active={isActive}
-        />
-
-        {error && currentFile && <p style={styles.link}>Incorrect file type</p>}
+        {currentFile && (
+          <FileSettings
+            currentFile={currentFile}
+            deleteFile={deleteFile}
+            uploadFile={uploadFile}
+          />
+        )}
       </div>
     </>
   );
@@ -126,11 +115,7 @@ const styles: { [name: string]: React.CSSProperties } = {
     lineHeight: "23px",
     marginTop: "15px",
   },
-  fileContainer: {
-    display: "flex",
-    flexDirection: "column",
-    marginTop: "17px",
-  },
+
   buttonContainer: {
     display: "flex",
     width: "50%",
