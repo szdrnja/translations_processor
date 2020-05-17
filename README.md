@@ -13,3 +13,7 @@ https://zdrnjabk4.github.io/translations_processor/
 - [ ] Specify whether to create one file per language (column)
 - [ ] (_if not_) Specify nesting of the language (_first_ or _last_). \* If key is not separated (nested) specify on what character to merge the language with the translation key.
       ex. '.' -> `language`.`translation_key`
+
+## Sources
+
+Icons from: https://www.svgrepo.com/vectors/

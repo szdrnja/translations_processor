@@ -1,3 +1,5 @@
+import * as XLSX from "xlsx";
+
 const download = (content, name, type) => {
   const file = new Blob([content], { type: type });
   var isIE = /*@cc_on!@*/ false || !!document.documentMode;
@@ -42,7 +44,7 @@ const processRow = (db, row, keySeparator, keyColumn, indexColumn) => {
   }
   const keylist = row[keyColumn].split(keySeparator);
   for (const [key, value] of Object.entries(row)) {
-    if (key !== keyColumn && key != indexColumn) {
+    if (key !== keyColumn && key !== indexColumn) {
       populate(db, [key].concat(keylist), value);
     }
   }
@@ -63,7 +65,6 @@ export const processExcelData = (
     XL_row_object.forEach((row) => {
       processRow(db, row, ".", keyColumn, indexColumn);
     });
-    console.log(db);
     download(JSON.stringify(db), "processed.json", "application/json");
   });
 };
