@@ -77,7 +77,7 @@ const App: FunctionComponent = () => {
           to JSON in your desired i18n structure.
         </span>
 
-        <FileSettings />
+        {/* <FileSettings /> */}
 
         {currentFile && (
           <div style={styles.fileContainer}>
