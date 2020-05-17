@@ -128,6 +128,7 @@ const styles: { [name: string]: React.CSSProperties } = {
   radioContainer: {
     margin: "5px",
   },
+  uploadButton: { width: "50%", margin: "2rem auto" },
 };
 
 export default FileSettings;

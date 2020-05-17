@@ -3,26 +3,30 @@ import React, { FunctionComponent, useState } from "react";
 // Components
 import Dropzone from "./common/components/Dropzone";
 import FileSettings from "./common/components/FileSettings";
+import ActionButton from "./common/components/ActionButton";
+import ErrorContainer from "./common/components/ErrorContainer";
 
 // Actions
-import { fetchHeaders, processFile, EXT_PROCESSORS } from "./processor";
-// import { processExcelData } from "./processor-DONTTOUCH";
+import { fetchHeaders, processFile, EXT_PROCESSORS, Utils } from "./processor";
 
 // Other
+import { ACTION_BUTTON_TYPES } from "./common/constants";
 import { colors } from "./assets/styles";
-// import * as XLSX from "xlsx";
 
 const App: FunctionComponent = () => {
   const fileTypes = "." + Object.keys(EXT_PROCESSORS).join(" .");
 
   const [currentFile, setCurrentFile] = useState<any>();
-  const [isActive, setButtonStatus] = useState(false);
+  const [newFile, setNewFile] = useState<any>();
+  const [filePreview, setPreview] = useState<any>();
   const [headers, setHeaders] = useState([]);
 
   const setFiles = (files: FileList) => {
+    setNewFile(null);
+
     if (files.length) {
       setCurrentFile(files[0]);
-      setButtonStatus(true);
+
       fetchHeaders(files[0]).then((rc) => {
         if (rc.statusCode) {
           // error handling
@@ -36,7 +40,6 @@ const App: FunctionComponent = () => {
 
   const deleteFile = () => {
     setCurrentFile(null);
-    setButtonStatus(false);
   };
 
   const uploadFile = () => {
@@ -46,17 +49,43 @@ const App: FunctionComponent = () => {
         console.log(rc.errorMessage);
         return;
       }
-      let data = rc.data;
-      console.log("data", data);
+      setNewFile(rc.data);
+      setPreview(JSON.stringify(rc.data, null, 2));
     });
     deleteFile();
   };
+
+  const downloadFile = () => {
+    Utils.download(newFile, "stefan");
+    reset();
+  };
+
+  const reset = () => {
+    setCurrentFile(null);
+    setNewFile(null);
+    errorLog = null;
+  };
+
+  let errorLog;
+
+  errorLog = [
+    {
+      unprocessedKeys: ["LOGIN.LEMONS", "LOGIN.LEMONS.PIE"],
+      reason: "Bad key structure",
+      hint: "try making nesting levels unique",
+    },
+    {
+      unprocessedKeys: ["BUTTON.NO", "BUTTON.NO"],
+      reason: "Duplicate Keys",
+      hint: "This was found in rows #7 & #54 of your original spreadsheet",
+    },
+  ];
 
   return (
     <>
       <div style={styles.headerContainer}>
         <div
-          onClick={() => alert("sydney loves stefan")}
+          onClick={() => reset()}
           style={{ display: "flex", cursor: "pointer" }}
         >
           <span style={styles.betaTag}>Emdomy</span>
@@ -65,17 +94,18 @@ const App: FunctionComponent = () => {
       <div style={styles.contentContainer}>
         <span style={styles.title}>Translation Processor</span>
 
-        <span style={styles.description}>
-          Upload spreadsheets containing your translations here to be converted
-          to JSON in your desired i18n structure.
-        </span>
-
-        {!currentFile && (
-          <Dropzone
-            setFiles={setFiles}
-            acceptedFileTypes={fileTypes}
-            allowMultipleFiles={false}
-          />
+        {!currentFile && !newFile && (
+          <>
+            <span style={styles.description}>
+              Upload spreadsheets containing your translations here to be
+              converted to JSON in your desired i18n structure.
+            </span>
+            <Dropzone
+              setFiles={setFiles}
+              acceptedFileTypes={fileTypes}
+              allowMultipleFiles={false}
+            />
+          </>
         )}
 
         {currentFile && (
@@ -84,6 +114,34 @@ const App: FunctionComponent = () => {
             deleteFile={deleteFile}
             uploadFile={uploadFile}
           />
+        )}
+
+        {newFile && (
+          <>
+            <div style={styles.description}>
+              <span>Your new translation file is ready to be downloaded</span>
+              {errorLog && <span>, however there were a few errors.</span>}
+            </div>
+            <div>
+              <span style={styles.description}>Preview File </span>
+              <pre
+                style={{
+                  ...styles.previewContainer,
+                  border: `2px dashed ${colors.main.secondary}`,
+                }}
+                id="json"
+              >
+                {filePreview}
+              </pre>
+              {errorLog && <ErrorContainer errors={errorLog} />}
+            </div>
+            <ActionButton
+              style={styles.downloadButton}
+              buttonType={ACTION_BUTTON_TYPES.optional}
+              label="Download File"
+              action={downloadFile}
+            />
+          </>
         )}
       </div>
     </>
@@ -115,17 +173,15 @@ const styles: { [name: string]: React.CSSProperties } = {
     lineHeight: "23px",
     marginTop: "15px",
   },
-
-  buttonContainer: {
-    display: "flex",
-    width: "50%",
-    justifyContent: "space-between",
+  previewContainer: {
+    overflow: "hidden",
+    maxHeight: "20rem",
+    padding: "1rem",
+    overflowY: "auto",
   },
-  uploadButton: { width: "50%", margin: "2rem auto" },
-  link: {
-    color: colors.main.secondary,
-    fontWeight: "bold",
-    marginLeft: "15px",
+  downloadButton: {
+    width: "50%",
+    margin: "2rem auto",
   },
 };
 

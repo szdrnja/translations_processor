@@ -176,7 +176,7 @@ class CSVProcessor extends SeparatorProcessor {
   }
 };
 
-class Utils {
+export class Utils {
   static isDict(obj) {
     return typeof obj === "object" && !Array.isArray(obj);
   };
@@ -185,18 +185,19 @@ class Utils {
     const splitByDot = filename.split('.');
     return splitByDot[splitByDot.length - 1];
   }
-  static download(content, name, type) {
+  static download(content, filename) {
     if (content instanceof Object) {
       content = JSON.stringify(content);
     }
-    const file = new Blob([content], { type: type });
+    filename = filename + '.json';
+    const file = new Blob([content], { type: 'application/json' });
     var isIE = /*@cc_on!@*/false || !!document.documentMode;
     if (isIE) {
-      window.navigator.msSaveOrOpenBlob(file, name);
+      window.navigator.msSaveOrOpenBlob(file, filename);
     } else {
       const a = document.createElement('a');
       a.href = URL.createObjectURL(file);
-      a.download = name;
+      a.download = filename;
       a.click();
     }
   };
