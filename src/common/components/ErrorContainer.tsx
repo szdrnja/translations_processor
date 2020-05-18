@@ -37,7 +37,6 @@ const ErrorContainer: FunctionComponent<IProps> = ({ errors }) => {
               </div>
             );
           })}
-          \
         </div>
       )}
     </>

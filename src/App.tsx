@@ -20,7 +20,7 @@ const App: FunctionComponent = () => {
   const [newFile, setNewFile] = useState<any>();
   const [filePreview, setPreview] = useState<any>();
   const [headers, setHeaders] = useState([]);
-  const [settings, setFileSettings] = useState<any>();
+  const [newFilename, setNewFilename] = useState<string>();
 
   const setFiles = (files: FileList) => {
     setNewFile(null);
@@ -38,7 +38,19 @@ const App: FunctionComponent = () => {
     }
   };
 
-  const uploadFile = () => {
+  const uploadFile = (fileSettings: any, filename: string) => {
+    // remove the file extension if remaining from OG name
+    setNewFilename(filename);
+
+    // currentFile,
+    // fileSettings.headers,
+    // fileSettings.keyColumn,
+    // fileSettings.columns,
+    // fileSettings.keySeparator,
+    // fileSettings.containsHeaders,
+    // fileSettings.filePerLanguage,
+    // fileSettings.languageFirst
+
     processFile(currentFile, headers, 1, [2, 3], ".").then((rc) => {
       if (rc.statusCode) {
         // show error log
@@ -52,7 +64,7 @@ const App: FunctionComponent = () => {
   };
 
   const downloadFile = () => {
-    Utils.download(newFile, "stefan");
+    Utils.download(newFile, newFilename);
     reset();
   };
 
@@ -135,7 +147,7 @@ const App: FunctionComponent = () => {
             <ActionButton
               style={styles.downloadButton}
               buttonType={ACTION_BUTTON_TYPES.optional}
-              label="Download File"
+              label={"Download"}
               action={downloadFile}
             />
           </>
